@@ -1,0 +1,68 @@
+.navbar-brand.company-name {
+  margin-right: 9rem;
+}
+
+.login-form {
+  margin-top: 3rem;
+  max-width: 500px;
+}
+
+.register-btn, .addBook-btn {
+  margin-top: .75rem;
+}
+
+.book-container, .movie-container {
+  margin: 1.25rem 0rem;
+}
+
+.wishlist-div {
+  margin: 1.25rem;
+}
+
+.list-group {
+    max-width: 550px;
+}
+
+.wishlist-div .header {
+  font-size: 1.75rem;
+}
+
+.wishlist-remove {
+  margin-left: 1.7rem;
+}
+
+.whole-wishlist-remove {
+  margin: .9rem 0;
+}
+
+.download-container, .customer-container, .wishlist-container {
+    margin: 1.25rem;
+}
+
+.creation-date {
+  font-size: 1.25rem;
+}
+
+.download-container .type {
+  margin-right: 3.5rem;
+}
+
+.download-container .download-date {
+  margin-left: 3.75rem;
+}
+
+.list-group.download-list {
+    max-width: 875px;
+}
+
+.card-title {
+  display: block;
+}
+
+.movie-search,
+.book-search {
+  max-width: 500px;
+  margin-top: 1.15rem;
+  margin-right: .75rem;
+  display: inline;
+}
