@@ -4,78 +4,77 @@
     <meta charset="UTF-8" />
     <title>Books and Flicks</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
-    <link rel="stylesheet" href="./client/style.css" </head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  </head>
 
   <body>
+
+    <!--NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-      <div class="container-fluid">
-        <a class="navbar-brand company-name">Books and Flicks</a>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" href="./index.html">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="./register.html">Register for membership</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="./books.html">Browse books</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="./movies.html">Browse movies</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="./wishlist.html">Wishlist</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="./downloads.html">Downloads</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="./customers.html">Customers</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-    <form class="login-form" method="post" action="/add_movie">
+			<div class="container-fluid">
+				<a class="navbar-brand company-name">Books and Flicks</a>
+				<div class="collapse navbar-collapse">
+					<ul class="navbar-nav">
+						<li class="nav-item">
+							<a class="nav-link" aria-current="page" href="./index">Home</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="./book-library">Browse books</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="./movie-library">Browse movies</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="./wishlist-library">Wishlist</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="./customers-library">Customers</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+        <!--Adding a movie to the database -->
+    <form class="login-form" method="post" action="/add_a_movie">
       <div class="container-fluid">
         <div class="mb-3">
           <label for="title" class="form-label">Title</label>
-          <input type="text" id="title" name = title class="form-control movie-title" />
+          <input type="text" name="movie_title" class="form-control" />
         </div>
         <div class="mb-3">
           <label for="director" class="form-label">Director</label>
-          <input type="text" id="director" name="director" class="form-control movie-director" />
+          <input type="text" name="director" class="form-control" />
         </div>
         <div class="mb-3">
-          <label for="rating" class="form-label">Movie Rating</label>
-          <input type="text" id="rating" name="rating" class="form-control movie-rating" />
+          <label for="rating" class="form-label">MPAA Rating</label>
+          <input type="text" name="rated" class="form-control" />
         </div>
         <div class="mb-3">
           <label for="actors" class="form-label">Movie actors</label>
-          <textarea class="form-control movie-actors" name="actors" id="actors" rows="3"></textarea>
+          <textarea class="form-control" name="actor"></textarea>
         </div>
         <div class="mb-3">
           <label for="genre" class="form-label">Genre</label>
-          <input type="text" id="genre" name="genre" class="form-control movie-genre" />
+          <input type="text" name="genre" class="form-control movie-genre" />
         </div>
         <div class="mb-3">
-          <label for="runtime" class="form-label">Length of film in minutes</label>
-          <input type="number" id="runtime" name="runtime" class="form-control movie-runtime" />
+          <label for="runtime" class="form-label">Runtime in Minutes</label>
+          <input type="number" name="run_time" class="form-control" />
         </div>
         <div class="mb-3">
-          <label for="year" class="form-label">Year movie was released</label>
-          <input type="number" id="year" name="year" class="form-control movie-year" />
+          <label for="year" class="form-label">Release Year</label>
+          <input type="number" name="year" class="form-control" />
         </div>
         <div class="mb-3">
-          <label for="country" class="form-label">Initials of country where movie was made</label>
-          <input type="text" id="country" name="country" class="form-control movie-country" />
+          <label for="country" class="form-label">Country Code</label>
+          <input type="text" name="country" class="form-control" />
         </div>
         <div class="mb-3">
           <label for="description" class="form-label">Short description of movie</label>
-          <textarea class="form-control movie-description" name="description" placeholder="Enter a short description of the movie" id="description" rows="3"></textarea>
+          <input type="text" name="description" class="form-control" placeholder="Enter a short description of the movie" rows="3"/>
         </div>
-        <button type="submit" class="btn btn-primary addMovie-btn">
+        <button type="submit" class="btn btn-primary">
           Add this movie
         </button>
       </div>

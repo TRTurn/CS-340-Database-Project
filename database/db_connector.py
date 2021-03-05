@@ -9,7 +9,7 @@ load_dotenv(find_dotenv())
 host = 'localhost'
 user = 'root'                                   # can be different if you set up another username in your MySQL installation
 passwd = 'L3m.nade1H3lix'                        # set accordingly
-db = 'Book_And_Flicks'
+db = 'Books_And_Flicks'
 
 
 def connect_to_database(host = host, user = user, passwd = passwd, db = db):
