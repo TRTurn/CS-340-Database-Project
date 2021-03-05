@@ -54,12 +54,13 @@
       {% for book in books %}
       <div class = "col-sm-3">
           <div class = "card-body">
+            <h5 hidden name="book_id">{{book['book_id']}}</h5>
             <h5 class="card-title">{{book['title']}}</h5>
               <p class="card-text">Author: <span>{{book['author']}}</span></p>
               <p class="card-text">Genre: <span>{{book['genre']}}</span></p>
               <p class="card-text">Page Count: <span>{{book['page_count']}}</span></p>
-              <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#movieWishListModal">Add to wishlist</a>
-              <a href="#" class="btn btn-secondary">Delete</a>
+              <a href="./update-book/{{book['book_id']}}" class="btn btn-primary">Update</a>
+              <a href="./delete-book/{{book['book_id']}}" class= "btn btn-secondary" name='delete'> Delete</a>
           </div>
       </div>
       {% endfor %}

@@ -51,18 +51,19 @@
 
     <div class="customer-container container-fluid">
       <h1>Customer List</h1>
-      <ul class="list-group list-group-flush download-list">
+      <ul class="list-group list-group-flush">
         {% for customer in customers %}
         <li class="list-group-item">
           <div class="card" style="width: 18rem;">
             <div class="card-body">
+              <h5 hidden name='customer_id'>{{customer['customer_id']}}</h5>
               <h5 class="card-title">{{customer['customer_first_name']}} {{customer['customer_last_name']}}</h5>
               <h6 class="card-title">Username: <span>{{customer['username']}}</h6>
               <h7 class="card-title">Email: <span>{{customer['email']}}</span></h7>
-              <h7 class="card-title">Phone Number: <span>customer['phone']</span></h7>
+              <h7 class="card-title">Phone Number: <span>{{customer['phone']}}</span></h7>
             </div>
-            <a href="#" class="btn btn-primary">Update</a>
-            <a href="#" class="btn btn-secondary">Delete</a>
+            <a href="./update-customer/{{customer['customer_id']}}" class="btn btn-primary">Update</a>
+            <a href="./delete-customer/{{customer['customer_id']}}" class= "btn btn-secondary" name='delete'> Delete</a>
           </div>
         </li>
         {% endfor %}

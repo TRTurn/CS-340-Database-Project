@@ -1,5 +1,5 @@
 from flask import Flask, render_template, json
-from flask import request
+from flask import request, redirect
 import os
 import database.db_connector as db
 
@@ -17,7 +17,7 @@ app = Flask(__name__)
 # Display Books
 @app.route('/book-library')
 def book():
-    query = "SELECT title, author, genre, page_count, description FROM Books;"
+    query = "SELECT book_id, title, author, genre, page_count, description FROM Books;"
     cursor = db.execute_query(db_connection=db_connection, query=query)
     results = cursor.fetchall()
     return render_template("book-library.html", books=results)
@@ -42,6 +42,13 @@ def add_books():
     db.execute_query(db_connection, query, book_data)
     return render_template('/add_book.html')
 
+
+@app.route('/delete-book/<id>')
+def remove_book(id):
+    query = "DELETE FROM Books WHERE book_id = %s" %(id)
+    db.execute_query(db_connection, query)
+    return redirect('/book-library')
+
 ###########################################
 # MOVIES
 ###########################################
@@ -50,7 +57,7 @@ def add_books():
 
 @app.route('/movie-library')
 def display_movies():
-    query = "SELECT movie_title, director, genre, run_time, year, description, rated, movie_id FROM Movies;"
+    query = "SELECT movie_id, movie_title, director, genre, run_time, year, description, rated, movie_id FROM Movies;"
     cursor = db.execute_query(db_connection=db_connection, query=query)
     results = cursor.fetchall()
     return render_template("movie-library.html", movies=results)
@@ -80,22 +87,26 @@ def add_new_movies():
     return render_template('add_movie.html')
 
 # Delete Movie
-@app.route('/delete_movie', methods = ['POST', 'GET'])
-def delete_move():
-    query = 'DELETE FROM Movies WHERE movie_id = %s'
+
+@app.route('/delete-movie/<id>')
+def remove_movie(id):
+    query = "DELETE FROM Movies where movie_id = %s" %(id)
+    db.execute_query(db_connection, query)
+    return redirect('/movie-library')
+
 #############################
 # Customers
 #############################
 
-# Display Customer
+# Display Customer - library
 @app.route('/customers-library')
 def customers():
-    # Write a query and save it as a variable
-    query = "SELECT customer_first_name, customer_last_name, email, phone, premium, username FROM customers;"
+    query = "SELECT customer_id, customer_first_name, customer_last_name, email, phone, premium, username FROM customers;"
     cursor = db.execute_query(db_connection = db_connection, query=query)
     results = cursor.fetchall()
     return render_template("customers-library.html", customers=results)
 
+# Add New Customers
 @app.route('/register-customer', methods=['POST', 'GET'])
 def display_registration():
     return render_template("/register-customer.html")
@@ -117,6 +128,43 @@ def add_new_customer():
     db.execute_query(db_connection, query, customer_data)
     return render_template('register-customer.html')
 
+# Delete Customer
+@app.route('/delete-customer/<id>')
+def remove_customer(id):
+    query = "DELETE FROM Customers where customer_id = %s" %(id)
+    db.execute_query(db_connection, query)
+    return redirect('/customers-library')
+
+# Update Customer Entry
+@app.route('/update-customer/<id>', methods=['POST', 'GET'])
+def update_customer(id):
+    db_connection = db.connect_to_database()
+    if request.method == 'GET':
+        customer_query = 'SELECT * FROM Customers WHERE customer_id = %s' %(id)
+        customer_result = db.execute_query(db_connection, customer_query).fetchone()
+        return render_template('update-customer.html', customer=customer_result)
+
+        if people_result == None:
+            return "No such person found!"
+
+
+    elif request.method == 'POST':
+        print("Updated")
+        customer_id = request.form['customer_id']
+        customer_first_name = request.form['customer_first_name']
+        customer_last_name = request.form['customer_last_name']
+        email = request.form['email']
+        phone = request.form['phone']
+        premium = request.form['premium']
+        username = request.form['username']
+        password = request.form['password']
+
+        customer_update_query = "UPDATE customers SET customer_first_name = %s, customer_last_name = %s, email = %s, phone = %s, premium = %s, username = %s, password = %s WHERE customer_id = %s"
+        update_data = (customer_first_name, customer_last_name, email, phone, premium, username, password, customer_id)
+        db.execute_query(db_connection, customer_update_query, update_data)
+        return redirect('/customers-library')
+
+
 #############
 # End Working
 #############
@@ -126,7 +174,6 @@ def add_new_customer():
 #########
 
 
-
 ###### END TESTING #####
 
 
@@ -134,10 +181,8 @@ def add_new_customer():
 # Old defaults
 ###############
 # Routes (Maybe dictate which page? Think handlebars?)
-@app.route('/', methods = ["GET"])
+@app.route('/index', methods = ["GET"])
 def root():
-    data = request.get_json()
-    print(data)
     return render_template("index.html")
 
 
@@ -148,10 +193,6 @@ def search_movies():
     cursor = db.execute_query(title, db_connection=db_connection, query=query)
     results = cursor.fetchall()
     return render_template("movie-library.html", movies=results)
-
-
-
-
 
 # Books
 @app.route('/add_book', methods = ['POST', 'GET'])

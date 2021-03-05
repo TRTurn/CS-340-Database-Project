@@ -60,17 +60,17 @@
       <div class="row">
         <div class = "col-sm-3">
             <div class = "card-body">
-                 <h5 class="card-title">{{movie['movie_title']}}</h5>
-
-                        <p class="card-text director">Director: <span>{{movie['director']}}</span></p>
-                        <p class ='card-text description'> Description: <span>{{movie['description']}}</span></p>
-                        <p class ='card-text genre'> Genre: <span>{{movie['genre']}}</span></p>
-                        <p class="card-text released">Released year: <span>{{movie['year']}}</span></p>
-                        <p class="card-text run-time">Runtime: <span>{{movie['run_time']}}</span></p>
-                        <p class="card-text run-time">Rating: <span>{{movie['rated']}}</span></p>
-                        <p hidden> Movie Id: <span> {{movie['movie_id']}}</span></p>
-                        <a href="#" class="btn btn-primary add-wishlist-movie" data-toggle="modal" data-target="#movieWishListModal">Add to wishlist</a>
-                        <a href="#" class="btn btn-secondary DELETE">Remove</a>
+                <h5 class="card-title">{{movie['movie_title']}}</h5>
+                <h5 hidden name="movie_id">{{movie['movie_id']}}</h5>
+                <p class="card-text director">Director: <span>{{movie['director']}}</span></p>
+                <p class ='card-text description'> Description: <span>{{movie['description']}}</span></p>
+                <p class ='card-text genre'> Genre: <span>{{movie['genre']}}</span></p>
+                <p class="card-text released">Released year: <span>{{movie['year']}}</span></p>
+                <p class="card-text run-time">Runtime: <span>{{movie['run_time']}}</span></p>
+                <p class="card-text run-time">Rating: <span>{{movie['rated']}}</span></p>
+                <p hidden> Movie Id: <span> {{movie['movie_id']}}</span></p>
+                <a href="./update-movie/{{movie['movie_id']}}" class="btn btn-primary">Update</a>
+                <a href="./delete-movie/{{movie['movie_id']}}" class= "btn btn-secondary" name='delete'> Delete</a>
             </div>
           </div>
       </div>
