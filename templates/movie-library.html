@@ -56,8 +56,10 @@
 
     <h2>Movie Library</h2>
     <!-- DataBase Movie Library Display -->
-    {% for movie in movies %}
+    {%- for movie in movies %}
+      {% if loop.index is divisibleby 3 %}
       <div class="row">
+      {% endif %}
         <div class = "col-sm-3">
             <div class = "card-body">
                 <h5 class="card-title">{{movie['movie_title']}}</h5>
@@ -73,8 +75,10 @@
                 <a href="./delete-movie/{{movie['movie_id']}}" class= "btn btn-secondary" name='delete'> Delete</a>
             </div>
           </div>
+      {% if loop.index + 1 is divisibleby 3 %}
       </div>
-    {% endfor %}
+      {% endif %}
+    {%- endfor %}
 
 
       <div class="modal fade" id="movieWishListModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

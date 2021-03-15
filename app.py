@@ -13,7 +13,6 @@ app = Flask(__name__)
 #######################################
 # BOOKS
 #######################################
-
 # Display Books
 @app.route('/book-library')
 def book():
@@ -22,12 +21,11 @@ def book():
     results = cursor.fetchall()
     return render_template("book-library.html", books=results)
 
-# Render page
 @app.route('/add_book')
 def render_books():
     return render_template('/add_book.html')
 
-# Adds book to database
+# Add book
 @app.route('/add_a_book', methods=['POST', 'GET'])
 def add_books():
     print("Adding new book")
@@ -42,19 +40,43 @@ def add_books():
     db.execute_query(db_connection, query, book_data)
     return render_template('/add_book.html')
 
-
+# Delete Book Entry
 @app.route('/delete-book/<id>')
 def remove_book(id):
     query = "DELETE FROM Books WHERE book_id = %s" %(id)
     db.execute_query(db_connection, query)
     return redirect('/book-library')
 
+# Update Book Entry
+@app.route('/update-book/<id>', methods=['POST', 'GET'])
+def update_book(id):
+    db_connection = db.connect_to_database()
+    if request.method == 'GET':
+        book_query = 'SELECT * FROM Books WHERE book_id = %s' %(id)
+        book_result = db.execute_query(db_connection, book_query).fetchone()
+        return render_template('update-book.html', book=book_result)
+
+        if book_result == None:
+            return "No such movie found!"
+
+    elif request.method == 'POST':
+        print("Updated")
+        book_id = request.form['book_id']
+        title = request.form['title']
+        author = request.form['author']
+        genre = request.form['genre']
+        page_count = request.form['page_count']
+        description = request.form['description']
+
+        book_update_query = "UPDATE Books SET title = %s, author = %s, genre = %s, page_count = %s, description = %s WHERE book_id = %s"
+        update_data = (title, author, genre, page_count, description, book_id)
+        db.execute_query(db_connection, book_update_query, update_data)
+        return redirect('/book-library')
+
 ###########################################
 # MOVIES
 ###########################################
-
 # Display Movie
-
 @app.route('/movie-library')
 def display_movies():
     query = "SELECT movie_id, movie_title, director, genre, run_time, year, description, rated, movie_id FROM Movies;"
@@ -86,18 +108,48 @@ def add_new_movies():
     db.execute_query(db_connection, query, movie_data)
     return render_template('add_movie.html')
 
-# Delete Movie
-
+# Delete Movie Entry
 @app.route('/delete-movie/<id>')
 def remove_movie(id):
     query = "DELETE FROM Movies where movie_id = %s" %(id)
     db.execute_query(db_connection, query)
     return redirect('/movie-library')
 
+# Update Movie Entry
+@app.route('/update-movie/<id>', methods=['POST', 'GET'])
+def update_movie(id):
+    db_connection = db.connect_to_database()
+    if request.method == 'GET':
+        movie_query = 'SELECT * FROM Movies WHERE movie_id = %s' %(id)
+        movie_result = db.execute_query(db_connection, movie_query).fetchone()
+        return render_template('update-movie.html', movie=movie_result)
+
+        if movie_result == None:
+            return "No such movie found!"
+
+    elif request.method == 'POST':
+        print("Updated")
+        movie_id = request.form['movie_id']
+        movie_title = request.form['movie_title']
+        director = request.form['director']
+        rated = request.form['rated']
+        actor = request.form['actor']
+        genre = request.form['genre']
+        run_time = request.form['run_time']
+        year = request.form['year']
+        country = request.form['country']
+        description = request.form['description']
+
+
+        movie_update_query = "UPDATE movies SET movie_title = %s, director = %s, rated = %s, actor = %s, genre = %s, run_time = %s, year = %s, country = %s, description = %s WHERE movie_id = %s"
+        update_data = (movie_title, director, rated, actor, genre, run_time, year, country, description, movie_id)
+        db.execute_query(db_connection, movie_update_query, update_data)
+        return redirect('/movie-library')
+
+
 #############################
 # Customers
 #############################
-
 # Display Customer - library
 @app.route('/customers-library')
 def customers():
@@ -146,7 +198,6 @@ def update_customer(id):
 
         if people_result == None:
             return "No such person found!"
-
 
     elif request.method == 'POST':
         print("Updated")
