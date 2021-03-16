@@ -185,7 +185,7 @@ def add_new_customer():
     username = request.form['username']
     password = request.form['password']
 
-    query = 'INSERT INTO customers(customer_first_name, customer_last_name, email, phone, premium, username, password) VALUES (%s, %s, %s, %s, %s, %s, %s)'
+    query = 'INSERT INTO customers(customer_first_name, customer_last_name, email, phone, premium, username, password) VALUES (%s, %s, %s, %s, %s, %s, %s);'
     customer_data = (customer_first_name, customer_last_name, email, phone, premium, username, password)
     db_connection = db.connect_to_database()
     db.execute_query(db_connection, query, customer_data)
@@ -194,7 +194,7 @@ def add_new_customer():
 # Delete Customer
 @app.route('/delete-customer/<id>')
 def remove_customer(id):
-    query = "DELETE FROM customers where customer_id = %s" %(id)
+    query = "DELETE FROM customers where customer_id = %s;" %(id)
     db.execute_query(db_connection, query)
     return redirect('/customers-library')
 
