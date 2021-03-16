@@ -36,11 +36,12 @@
 			</div>
 		</nav>
 
+    <h1>{{wishlist_name}}</h1>
     <div class="container-fluid">
       <!-- Add Movie -->
       <div class="row">
         <div class="col" >
-          <a class="btn btn-primary add_movie" href="./add-wishlist">Add a Wishlist</a>
+          <a class="btn btn-primary" href="/add-wishlist">Add a Wishlist</a>
         </div>
 
         <!--Search Bar -->
@@ -52,18 +53,18 @@
           </form>
         </div>
       </div>
-
+    </div>
 
     <div class="container-fluid">
       <h1>Wishlist Library</h1>
       {% for wishlist in wishlists %}
       <div class = "col-sm-3">
           <div class = "card-body">
-            <h5 hidden name="wishlist_id">{{wishlist['wishlist_id']}}</h5>
+            <p hidden name="wishlist_id">{{wishlist['wishlist_id']}}</p>
             <h5 class="card-title">Wishlist Name: {{wishlist['wishlist_name']}}</h5>
               <p class="card-text">Owner Username: <span>{{wishlist['username']}}</span></p>
               <a href="/view-wishlist/{{wishlist['wishlist_id']}}" class="btn btn-primary">View</a>
-              <a href="/delete-book/{{wishlist['wishlist_id']}}" class= "btn btn-secondary">Delete</a>
+              <a href="/delete-wishlist/{{wishlist['wishlist_id']}}" class= "btn btn-secondary">Delete</a>
           </div>
       </div>
       {% endfor %}

@@ -7,8 +7,16 @@ import database.db_connector as db
 app = Flask(__name__)
 
 #######################################
-# Working
+# Working Code
 #######################################
+
+
+#######################################
+# Homepage
+#######################################
+@app.route('/index', methods = ["GET"])
+def root():
+    return render_template("index.html")
 
 #######################################
 # BOOKS
@@ -28,7 +36,6 @@ def render_books():
 # Add book
 @app.route('/add_a_book', methods=['POST', 'GET'])
 def add_books():
-    print("Adding new book")
     title = request.form['title']
     author = request.form['author']
     genre = request.form['genre']
@@ -60,7 +67,6 @@ def update_book(id):
             return "No such movie found!"
 
     elif request.method == 'POST':
-        print("Updated")
         book_id = request.form['book_id']
         title = request.form['title']
         author = request.form['author']
@@ -99,7 +105,6 @@ def add_new_movie():
 # Add movie
 @app.route('/add_a_movie', methods=['POST', 'GET'])
 def add_new_movies():
-    print("Adding new movie")
     title = request.form['movie_title']
     director = request.form['director']
     rated = request.form['rated']
@@ -135,7 +140,6 @@ def update_movie(id):
             return "No such movie found!"
 
     elif request.method == 'POST':
-        print("Updated")
         movie_id = request.form['movie_id']
         movie_title = request.form['movie_title']
         director = request.form['director']
@@ -158,7 +162,6 @@ def search_movies():
     title = request.form['movie_search_query']
     query = "SELECT movie_id, movie_title, director, genre, run_time, year, description, rated FROM Movies WHERE movie_title = %s" %("'" + title + "'")
     results = db.execute_query(db_connection, query).fetchall()
-    print(results)
     return render_template("movie-library.html", movies=results)
 
 #############################
@@ -179,7 +182,6 @@ def display_registration():
 
 @app.route('/add-customer', methods=['POST', 'GET'])
 def add_new_customer():
-    print("Adding new customer")
     customer_first_name = request.form['customer_first_name']
     customer_last_name = request.form['customer_last_name']
     email = request.form['email']
@@ -214,7 +216,6 @@ def update_customer(id):
             return "No such person found!"
 
     elif request.method == 'POST':
-        print("Updated")
         customer_id = request.form['customer_id']
         customer_first_name = request.form['customer_first_name']
         customer_last_name = request.form['customer_last_name']
@@ -235,7 +236,6 @@ def customer_search():
     customer_name = request.form['customer-search-query']
     query = "SELECT customer_id, customer_first_name, customer_last_name, email, phone, premium, username, password FROM Customers WHERE customer_first_name = %s or customer_last_name = %s " %("'" + customer_name + "'", "'" + customer_name + "'")
     results = db.execute_query(db_connection, query).fetchall()
-    print(results)
     return render_template("customers-library.html", customers=results)
 
 #############################
@@ -244,7 +244,7 @@ def customer_search():
 @app.route('/wishlist-library')
 def wishlists():
     query = "SELECT Wishlists.wishlist_id, Wishlists.wishlist_name, customers.username FROM Wishlists INNER JOIN Customers on Wishlists.customer_id = Customers.customer_id;"
-    cursor = db.execute_query(db_connection = db_connection, query=query)
+    cursor = db.execute_query(db_connection=db_connection, query=query)
     results = cursor.fetchall()
     return render_template("wishlist-library.html", wishlists=results)
 
@@ -263,13 +263,14 @@ def create_wishlist():
     db.execute_query(db_connection, query, wishlist_data)
     return render_template("add-wishlist.html")
 
-#############
-# End Working
-#############
+# Delete Wishlist
+@app.route('/delete-wishlist/<id>')
+def delete_wishlist(id):
+    query = "DELETE FROM Wishlists WHERE wishlist_id = %s" %(id)
+    db.execute_query(db_connection, query)
+    return redirect('/wishlist-library')
 
-#########
-# Testing
-#########
+# Search Wishlist
 @app.route('/search-wishlist', methods=['POST','GET'])
 def search_wishlist():
     username = request.form['wishlist-search-query']
@@ -278,21 +279,55 @@ def search_wishlist():
     results = db.execute_query(db_connection, query).fetchall()
     return render_template("wishlist-library.html", wishlists=results)
 
+@app.route('/view-wishlist/<id>', methods = ['POST', 'GET'])
+def view_wishlist(id):
+    movie_query = "SELECT movies.movie_title FROM Movietrackers INNER JOIN movies on Movietrackers.movie_id = movies.movie_id WHERE wishlist_id = %s;" %(id)
+    book_query = "SELECT books.title FROM booktrackers INNER JOIN books on booktrackers.book_id = books.book_id WHERE wishlist_id = %s;" %(id)
+    wishlist_name_query = "SELECT wishlist_name FROM Wishlists WHERE wishlist_id = %s" %(id)
+    books = db.execute_query(db_connection, book_query).fetchall()
+    movies = db.execute_query(db_connection, movie_query).fetchall()
+    wishlist_name = db.execute_query(db_connection, wishlist_name_query).fetchall()
+    return render_template("view-wishlist.html", wishlist=wishlist_name, books=books, movies=movies, wishlist_id=id)
+
+#############
+# End Working
+#############
+
+
+#########
+# Testing
+#########
+@app.route('/add-booktracker', methods=['POST', 'GET'])
+def add_booktracker():
+    wishlist_id = request.form['wishlist_id']
+    title = request.form['book-title']
+    author = request.form['author']
+    book_query = "INSERT INTO Booktrackers(wishlist_id, book_id) VALUES ((SELECT wishlist_id FROM Wishlists where wishlist_id = %s), (SELECT book_id FROM Books WHERE title = %s AND author = %s));"
+    query_data = (wishlist_id, title, author)
+    db_connection = db.connect_to_database()
+    db.execute_query(db_connection, book_query, query_data)
+    return redirect("/wishlist-library")
+
+@app.route('/add-movietracker', methods=['POST', 'GET'])
+def add_movietracker():
+    wishlist_id = request.form['wishlist_id']
+    title = request.form['movie_title']
+    director = request.form['director']
+    movie_query = "INSERT INTO Movietrackers(wishlist_id, movie_id) VALUES ((SELECT wishlist_id FROM Wishlists where wishlist_id = %s), (SELECT movie_id FROM Movies WHERE movie_title = %s AND director = %s));"
+    query_data = (wishlist_id, title, director)
+    db_connection = db.connect_to_database()
+    db.execute_query(db_connection, movie_query, query_data)
+    return redirect("/wishlist-library")
+
 ###### END TESTING #####
 
 
 ###############
 # Old defaults
 ###############
-# Routes (Maybe dictate which page? Think handlebars?)
-@app.route('/index', methods = ["GET"])
-def root():
-    return render_template("index.html")
-
 # Books
 @app.route('/add_book', methods = ['POST', 'GET'])
 def add_new_books():
-    print("Adding new book")
     title = request.form['title']
     author = request.form['author']
     genre = request.form['genre']
@@ -315,7 +350,6 @@ def display_books():
 # Wishlists
 @app.route('/wishlist', methods = ['POST', 'GET'])
 def add_wishlist():
-    print('Adding wishlist')
     username = request.form['username']
     wishlist_name = request.form['wishlist_name']
     # Username -> customer_id + wishlist name
