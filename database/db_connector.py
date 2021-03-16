@@ -5,12 +5,10 @@ from dotenv import load_dotenv, find_dotenv
 # Load our environment variables from the .env file in the root of our project.
 load_dotenv(find_dotenv())
 
-# Set the variables in our application with those environment variables
-host = 'localhost'
-user = 'root'                                   # can be different if you set up another username in your MySQL installation
-passwd = 'L3m.nade1H3lix'                        # set accordingly
-db = 'Books_And_Flicks'
-
+host = '35.226.213.27'
+user = 'cs-340'
+passwd = 'password'
+db = 'books_and_flicks'
 
 def connect_to_database(host = host, user = user, passwd = passwd, db = db):
     '''

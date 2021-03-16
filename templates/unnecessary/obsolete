@@ -1,0 +1,40 @@
+###############
+# Old defaults
+###############
+# Books
+@app.route('/add_book', methods = ['POST', 'GET'])
+def add_new_books():
+    title = request.form['title']
+    author = request.form['author']
+    genre = request.form['genre']
+    pages = request.form['pages']
+    description = request.form['description']
+
+    query = 'INSERT INTO Books(title, author, genre, page_count, description) VALUES (%s, %s, %s, %s, %s)'
+    book_data = (title, author, genre, pages, description)
+    db_connection = connect_to_database()
+    execute_query = (db_connection, query, book_data)
+    return render_template('add_book.html')
+
+@app.route('/display_book', methods = ['POST', 'GET'])
+def display_books():
+    query = "SELECT title, author, description FROM Books WHERE title = %s"
+    title = request.form['title']
+    result = execute_query(db_connection, query).fetchall()
+    return render_template('books.html')
+
+# Wishlists
+@app.route('/wishlist', methods = ['POST', 'GET'])
+def add_wishlist():
+    username = request.form['username']
+    wishlist_name = request.form['wishlist_name']
+    # Username -> customer_id + wishlist name
+    username_query = 'SELECT customer_id FROM customers WHERE username = %s'
+    db_connection = connect_to_database()
+    execute_query = (db_connection, username_query, username)
+    return render_template('wishlist.html')
+
+@app.route('/fill', methods = ['POST', 'GET'])
+def add_book_tracker():
+    wishlist_name = request.form['wishlist_name']
+    query = 'INSERT INTO BookTrackers(wishlist_id, book_id) VALUES ((SELECT wishlist_id FROM Wishlists WHERE wishlist_name = :wishlist_name_input AND customer_id = (SELECT customer_id FROM Customers where username = :username_input)), :movie_id_to_add)'
