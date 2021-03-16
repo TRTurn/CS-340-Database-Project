@@ -45,10 +45,10 @@
 
         <!--Search Bar -->
         <div class="col">
-          <form action="/search-wishlists" method="post">
+          <form action="/search-wishlist" method="post">
             <h4>Search for a User's Wishlists</h4>
             <input type="text" name="wishlist-search-query" placeholder="Search by username" class="form-control">
-            <input type="submit" class="btn btn-secondary" value="submit"> <br>
+            <input type="submit" class="btn btn-secondary" value="Submit"> <br>
           </form>
         </div>
       </div>
@@ -62,8 +62,8 @@
             <h5 hidden name="wishlist_id">{{wishlist['wishlist_id']}}</h5>
             <h5 class="card-title">Wishlist Name: {{wishlist['wishlist_name']}}</h5>
               <p class="card-text">Owner Username: <span>{{wishlist['username']}}</span></p>
-              <a href="/update-wishlist/{{wishlist['wishlist_id']}}" class="btn btn-primary">Update</a>
-              <a href="/delete-book/{{wishlist['wishlist_id']}}" class= "btn btn-secondary" name='delete'> Delete</a>
+              <a href="/view-wishlist/{{wishlist['wishlist_id']}}" class="btn btn-primary">View</a>
+              <a href="/delete-book/{{wishlist['wishlist_id']}}" class= "btn btn-secondary">Delete</a>
           </div>
       </div>
       {% endfor %}

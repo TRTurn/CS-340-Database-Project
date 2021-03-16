@@ -270,8 +270,13 @@ def create_wishlist():
 #########
 # Testing
 #########
-
-
+@app.route('/search-wishlist', methods=['POST','GET'])
+def search_wishlist():
+    username = request.form['wishlist-search-query']
+    query = "SELECT Wishlists.wishlist_id, Wishlists.wishlist_name, customers.username FROM Wishlists INNER JOIN Customers on Wishlists.customer_id = Customers.customer_id WHERE Customers.username = %s" %("'" + username + "'")
+    wishlist_data = (username)
+    results = db.execute_query(db_connection, query).fetchall()
+    return render_template("wishlist-library.html", wishlists=results)
 
 ###### END TESTING #####
 
