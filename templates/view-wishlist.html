@@ -38,7 +38,7 @@
   <div>
     <div>
       <h4>Add Book to Wishlist</h4>
-      <form action="/add_booktracker" method="post">
+      <form action="/add-booktracker" method="post">
         <input type="hidden" name="wishlist_id" value = "{{wishlist_id}}">
         <label>Book</label><br>
         <label>Title</label><br>
@@ -62,7 +62,6 @@
     </div>
 
   </div>
-
     <div class="container-fluid">
       <h4>Books in Wishlist</h4>
       {% for book in books %}
@@ -70,11 +69,8 @@
           <div class = "card-body">
             <h5 hidden name="book_id">{{book['book_id']}}</h5>
             <h5 class="card-title">{{book['title']}}</h5>
-              <!-- <p class="card-text">Author: <span>{{book['author']}}</span></p>
-              <p class="card-text">Genre: <span>{{book['genre']}}</span></p>
-              <p class="card-text">Page Count: <span>{{book['page_count']}}</span></p> -->
-              <a href="/update-book/{{book['title']}}" class="btn btn-primary">Update</a>
-              <a href="/delete-book/{{book['book_id']}}" class= "btn btn-secondary"> Remove</a>
+            <h6>By: {{book['author']}}</h5>
+            <a href="/remove-booktracker/{{book['book_id']}}" class= "btn btn-secondary"> Remove</a>
           </div>
       </div>
       {% endfor %}
@@ -89,8 +85,8 @@
           <div class = "card-body">
             <h5 hidden name="book_id">{{movie['movie_id']}}</h5>
             <h5 class="card-title">{{movie['movie_title']}}</h5>
-              <a href="/update-movie/{{movie['movie_title']}}" class="btn btn-primary">Update</a>
-              <a href="/delete-movie/{{movie['movie_id']}}" class= "btn btn-secondary">Remove</a>
+            <h6 >Directed by: {{movie['director']}}</h5>
+            <a href="/remove-movietracker/{{movie['movie_id']}}" class= "btn btn-secondary">Remove</a>
           </div>
       </div>
       {% endfor %}

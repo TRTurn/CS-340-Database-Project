@@ -281,8 +281,8 @@ def search_wishlist():
 
 @app.route('/view-wishlist/<id>', methods = ['POST', 'GET'])
 def view_wishlist(id):
-    movie_query = "SELECT movies.movie_title FROM Movietrackers INNER JOIN movies on Movietrackers.movie_id = movies.movie_id WHERE wishlist_id = %s;" %(id)
-    book_query = "SELECT books.title FROM booktrackers INNER JOIN books on booktrackers.book_id = books.book_id WHERE wishlist_id = %s;" %(id)
+    movie_query = "SELECT movies.movie_title, movies.director FROM Movietrackers INNER JOIN movies on Movietrackers.movie_id = movies.movie_id WHERE wishlist_id = %s;" %(id)
+    book_query = "SELECT books.title, books.author FROM booktrackers INNER JOIN books on booktrackers.book_id = books.book_id WHERE wishlist_id = %s;" %(id)
     wishlist_name_query = "SELECT wishlist_name FROM Wishlists WHERE wishlist_id = %s" %(id)
     books = db.execute_query(db_connection, book_query).fetchall()
     movies = db.execute_query(db_connection, movie_query).fetchall()
@@ -319,60 +319,22 @@ def add_movietracker():
     db.execute_query(db_connection, movie_query, query_data)
     return redirect("/wishlist-library")
 
+@app.route('/remove-movietracker/<id>')
+def remove_movietracker(id, movie_id):
+    query = "DELETE FROM Movietrackers WHERE wishlist_id = %s AND movie_id = %s" %(id, movie_id)
+    db.execute_query(db_connection, query)
+    return redirect('/wishlist-library')
+
+@app.route('/remove-booktracker/<id>')
+def remove_booktracker(id, book_id):
+    query = "DELETE FROM Booktrackers WHERE wishlist_id = %s AND book_id = %s" %(id, book_id)
+    db.execute_query(db_connection, query)
+    return redirect('/wishlist-library')
 ###### END TESTING #####
 
 
-###############
-# Old defaults
-###############
-# Books
-@app.route('/add_book', methods = ['POST', 'GET'])
-def add_new_books():
-    title = request.form['title']
-    author = request.form['author']
-    genre = request.form['genre']
-    pages = request.form['pages']
-    description = request.form['description']
-
-    query = 'INSERT INTO Books(title, author, genre, page_count, description) VALUES (%s, %s, %s, %s, %s)'
-    book_data = (title, author, genre, pages, description)
-    db_connection = connect_to_database()
-    execute_query = (db_connection, query, book_data)
-    return render_template('add_book.html')
-
-@app.route('/display_book', methods = ['POST', 'GET'])
-def display_books():
-    query = "SELECT title, author, description FROM Books WHERE title = %s"
-    title = request.form['title']
-    result = execute_query(db_connection, query).fetchall()
-    return render_template('books.html')
-
-# Wishlists
-@app.route('/wishlist', methods = ['POST', 'GET'])
-def add_wishlist():
-    username = request.form['username']
-    wishlist_name = request.form['wishlist_name']
-    # Username -> customer_id + wishlist name
-    username_query = 'SELECT customer_id FROM customers WHERE username = %s'
-    db_connection = connect_to_database()
-    execute_query = (db_connection, username_query, username)
-    return render_template('wishlist.html')
-
-@app.route('/fill', methods = ['POST', 'GET'])
-def add_book_tracker():
-    wishlist_name = request.form['wishlist_name']
-    query = 'INSERT INTO BookTrackers(wishlist_id, book_id) VALUES ((SELECT wishlist_id FROM Wishlists WHERE wishlist_name = :wishlist_name_input AND customer_id = (SELECT customer_id FROM Customers where username = :username_input)), :movie_id_to_add)'
 
 if __name__ == "__main__":
-    @app.route('/wishlist')
-    def add_movie_tracker():
-        username = request.form['username']
-        wishlist_name = request.form['wishlist_name']
-        query = 'INSERT INTO MovieTrackers(wishlist_id, movie_id) VALUES (%s AND customer_id = %s), :movie_id_to_add)'
-        wishlist_id = 'SELECT wishlist_id FROM WishLists WHERE wishlist name=%s and customer_id = %s'
-        customer_id_query = 'SELECT customer_id FROM Customers where username = %s'
-
-    if __name__ == "__main__":
-        port = int(os.environ.get('PORT', 2000)) # 9112 can be any port
-        db_connection = db.connect_to_database()
-        app.run(port=port, debug=True)
+    port = int(os.environ.get('PORT', 2000)) # 9112 can be any port
+    db_connection = db.connect_to_database()
+    app.run(port=port, debug=True)
