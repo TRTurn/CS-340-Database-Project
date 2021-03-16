@@ -20,16 +20,16 @@
 							<a class="nav-link" aria-current="page" href="./index">Home</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="./book-library">Book Library</a>
+							<a class="nav-link" href="/book-library">Book Library</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="./movie-library">Movie Library</a>
+							<a class="nav-link" href="/movie-library">Movie Library</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="./wishlist-library">Wishlist</a>
+							<a class="nav-link" href="/wishlist-library">Wishlist</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="./customers-library">Customers</a>
+							<a class="nav-link" href="/customers-library">Customers</a>
 						</li>
 					</ul>
 				</div>
@@ -47,8 +47,8 @@
         <div class="col">
           <form action="/search-movies" method="post">
             <h4>Search for a Movie</h4>
-            <input type="text" name="movie_title" placeholder="Search by title" class="form-control">
-            <input type="submit" class="btn btn-secondary"  value="submit"> <br>
+            <input type="text" name="movie_search_query" placeholder="Search by title" class="form-control">
+            <input type="submit" class="btn btn-secondary" value="submit"> <br>
           </form>
         </div>
       </div>
@@ -57,9 +57,7 @@
     <h2>Movie Library</h2>
     <!-- DataBase Movie Library Display -->
     {%- for movie in movies %}
-      {% if loop.index is divisibleby 3 %}
       <div class="row">
-      {% endif %}
         <div class = "col-sm-3">
             <div class = "card-body">
                 <h5 class="card-title">{{movie['movie_title']}}</h5>
@@ -75,33 +73,8 @@
                 <a href="./delete-movie/{{movie['movie_id']}}" class= "btn btn-secondary" name='delete'> Delete</a>
             </div>
           </div>
-      {% if loop.index + 1 is divisibleby 3 %}
       </div>
-      {% endif %}
     {%- endfor %}
-
-
-      <div class="modal fade" id="movieWishListModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle">Create WishList</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <h4>Name of Wishlist</h4>
-              <input type="text" class="form-control movie-wishlist-name" placeholder="Enter name for your wishlist" />
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary create-movie-wishlist-button">Create Wishlist</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      </div>
 
   </body>
 

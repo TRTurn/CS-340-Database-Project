@@ -73,6 +73,13 @@ def update_book(id):
         db.execute_query(db_connection, book_update_query, update_data)
         return redirect('/book-library')
 
+@app.route('/search-books', methods = ['POST', 'GET'])
+def search_books():
+    title = request.form['book-search-query']
+    query = "SELECT book_id, title, author, genre, page_count, description FROM Books WHERE title = %s" %("'" + title + "'")
+    results = db.execute_query(db_connection, query).fetchall()
+    return render_template("book-library.html", books=results)
+
 ###########################################
 # MOVIES
 ###########################################
@@ -140,12 +147,19 @@ def update_movie(id):
         country = request.form['country']
         description = request.form['description']
 
-
         movie_update_query = "UPDATE movies SET movie_title = %s, director = %s, rated = %s, actor = %s, genre = %s, run_time = %s, year = %s, country = %s, description = %s WHERE movie_id = %s"
         update_data = (movie_title, director, rated, actor, genre, run_time, year, country, description, movie_id)
         db.execute_query(db_connection, movie_update_query, update_data)
         return redirect('/movie-library')
 
+# Search Movie by title
+@app.route('/search-movies', methods = ['POST', 'GET'])
+def search_movies():
+    title = request.form['movie_search_query']
+    query = "SELECT movie_id, movie_title, director, genre, run_time, year, description, rated FROM Movies WHERE movie_title = %s" %("'" + title + "'")
+    results = db.execute_query(db_connection, query).fetchall()
+    print(results)
+    return render_template("movie-library.html", movies=results)
 
 #############################
 # Customers
@@ -215,6 +229,39 @@ def update_customer(id):
         db.execute_query(db_connection, customer_update_query, update_data)
         return redirect('/customers-library')
 
+# Search for Customers
+@app.route('/search-customers', methods = ['POST', 'GET'])
+def customer_search():
+    customer_name = request.form['customer-search-query']
+    query = "SELECT customer_id, customer_first_name, customer_last_name, email, phone, premium, username, password FROM Customers WHERE customer_first_name = %s or customer_last_name = %s " %("'" + customer_name + "'", "'" + customer_name + "'")
+    results = db.execute_query(db_connection, query).fetchall()
+    print(results)
+    return render_template("customers-library.html", customers=results)
+
+#############################
+# Wishlists
+#############################
+@app.route('/wishlist-library')
+def wishlists():
+    query = "SELECT Wishlists.wishlist_id, Wishlists.wishlist_name, customers.username FROM Wishlists INNER JOIN Customers on Wishlists.customer_id = Customers.customer_id;"
+    cursor = db.execute_query(db_connection = db_connection, query=query)
+    results = cursor.fetchall()
+    return render_template("wishlist-library.html", wishlists=results)
+
+# Add New Wishlist
+@app.route('/add-wishlist', methods=['POST', 'GET'])
+def display_wishlist_creation():
+    return render_template("/add-wishlist.html")
+
+@app.route('/create-wishlist', methods=['POST', 'GET'])
+def create_wishlist():
+    wishlist_name = request.form['wishlist_name']
+    username = request.form['username']
+    query = "INSERT INTO Wishlists(customer_id, wishlist_name) VALUES ((SELECT customer_id FROM customers where username = %s), %s);"
+    wishlist_data = (username, wishlist_name)
+    db_connection = db.connect_to_database()
+    db.execute_query(db_connection, query, wishlist_data)
+    return render_template("add-wishlist.html")
 
 #############
 # End Working
@@ -223,6 +270,7 @@ def update_customer(id):
 #########
 # Testing
 #########
+
 
 
 ###### END TESTING #####
@@ -235,15 +283,6 @@ def update_customer(id):
 @app.route('/index', methods = ["GET"])
 def root():
     return render_template("index.html")
-
-
-@app.route('/search-movies', methods = ['POST', 'GET'])
-def search_movies():
-    title = request.form['movie_title']
-    query = f"SELECT movie_title, director, genre, run_time, year, description, rated FROM Movies WHERE movie_title like % {title} %;"
-    cursor = db.execute_query(title, db_connection=db_connection, query=query)
-    results = cursor.fetchall()
-    return render_template("movie-library.html", movies=results)
 
 # Books
 @app.route('/add_book', methods = ['POST', 'GET'])
@@ -262,14 +301,11 @@ def add_new_books():
     return render_template('add_book.html')
 
 @app.route('/display_book', methods = ['POST', 'GET'])
-def search_books():
+def display_books():
     query = "SELECT title, author, description FROM Books WHERE title = %s"
     title = request.form['title']
     result = execute_query(db_connection, query).fetchall()
     return render_template('books.html')
-
-
-
 
 # Wishlists
 @app.route('/wishlist', methods = ['POST', 'GET'])
